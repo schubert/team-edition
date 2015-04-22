@@ -1,6 +1,7 @@
 module TeamEdition
   class Bulk
     def initialize(tracker_api, project_file, team_file)
+      puts "Initializing... #{tracker_api} #{project_file} #{team_file}"
       @tracker_api = tracker_api
       @project_file = project_file
       @team_file = team_file
@@ -16,9 +17,11 @@ module TeamEdition
 
     def run!
       projects.each do |project|
+        puts "Working on project ##{project["id"]}"
         project_members = @tracker_api.members(project["id"])
-
+        
         team.each do |member|
+          puts "Attempting to add #{member["name"]}"
           unless project_members.include?(member["email"])
             @tracker_api.add_to_project(project["id"], member["name"], member["initials"], member["email"], member["role"])
             puts "Added #{member["name"]} to #{project["name"]}"
